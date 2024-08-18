@@ -1,11 +1,18 @@
 import cv2
 import numpy as np
 from utils import compute_d_optimal_1, compute_d_optimal_2, compute_distance_l1, compute_distance_l2, cosine_similarity
+from PIL import Image
 
 
 def pixel_wise_matching(left_img, right_img, disparity_range=16, scale=16, save_resutlts=True, distance_methods=compute_distance_l1):
-    left = cv2.imread(left_img, cv2.IMREAD_GRAYSCALE).astype(np.float32)
-    right = cv2.imread(right_img, cv2.IMREAD_GRAYSCALE).astype(np.float32)
+    if isinstance(left_img, str) and isinstance(right_img, str):
+        left = cv2.imread(left_img, cv2.IMREAD_GRAYSCALE).astype(np.float32)
+        right = cv2.imread(right_img, cv2.IMREAD_GRAYSCALE).astype(np.float32)
+    else:
+        left = left_img.convert("L")
+        left = np.array(left).astype(np.float32)
+        right = right_img.convert("L")
+        right = np.array(right).astype(np.float32)
     height, width = left.shape[:2]
 
     # create the result matrix
@@ -27,12 +34,18 @@ def pixel_wise_matching(left_img, right_img, disparity_range=16, scale=16, save_
             cv2.imwrite("results\\depth_l2_color.png", cv2.applyColorMap(
                 depth, cv2.COLORMAP_JET))
         print("Done!")
-    return depth
+    return cv2.applyColorMap(depth, cv2.COLORMAP_JET)
 
 
 def window_based_matching(left_img, right_img, disparity_range=64, kernel_size=3, save_resutlts=True, distance_methods=compute_distance_l1):
-    left = cv2.imread(left_img, cv2.IMREAD_GRAYSCALE).astype(np.float32)
-    right = cv2.imread(right_img, cv2.IMREAD_GRAYSCALE).astype(np.float32)
+    if isinstance(left_img, str) and isinstance(right_img, str):
+        left = cv2.imread(left_img, cv2.IMREAD_GRAYSCALE).astype(np.float32)
+        right = cv2.imread(right_img, cv2.IMREAD_GRAYSCALE).astype(np.float32)
+    else:
+        left = left_img.convert("L")
+        left = np.array(left).astype(np.float32)
+        right = right_img.convert("L")
+        right = np.array(right).astype(np.float32)
 
     height, width = left.shape[:2]
 
@@ -59,12 +72,18 @@ def window_based_matching(left_img, right_img, disparity_range=64, kernel_size=3
             cv2.imwrite("results\\window_based_l2_color.png", cv2.applyColorMap(
                 depth, cv2.COLORMAP_JET))
         print("Done!")
-    return depth
+    return cv2.applyColorMap(depth, cv2.COLORMAP_JET)
 
 
 def window_based_matching_cosine(left_img, right_img, disparity_range=64, kernel_size=3, save_resutlts=True):
-    left = cv2.imread(left_img, cv2.IMREAD_GRAYSCALE).astype(np.float32)
-    right = cv2.imread(right_img, cv2.IMREAD_GRAYSCALE).astype(np.float32)
+    if isinstance(left_img, str) and isinstance(right_img, str):
+        left = cv2.imread(left_img, cv2.IMREAD_GRAYSCALE).astype(np.float32)
+        right = cv2.imread(right_img, cv2.IMREAD_GRAYSCALE).astype(np.float32)
+    else:
+        left = left_img.convert("L")
+        left = np.array(left).astype(np.float32)
+        right = right_img.convert("L")
+        right = np.array(right).astype(np.float32)
 
     height, width = left.shape[:2]
 
@@ -102,7 +121,7 @@ def window_based_matching_cosine(left_img, right_img, disparity_range=64, kernel
         cv2.imwrite("results\\window_based_cosine_color.png", cv2.applyColorMap(
             depth, cv2.COLORMAP_JET))
         print("Done!")
-    return depth
+    return cv2.applyColorMap(depth, cv2.COLORMAP_JET)
 
 
 if __name__ == "__main__":
